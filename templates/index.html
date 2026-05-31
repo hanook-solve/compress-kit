@@ -46,7 +46,39 @@
       letter-spacing: 0.05em;
     }
 
-    /* FILE UPLOAD AREA */
+    /* TABS */
+    .tabs {
+      display: flex;
+      background: white;
+      border-radius: 12px;
+      padding: 6px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+      gap: 6px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: #4a5568;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #2b6cb0;
+      color: white;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* UPLOAD AREA */
     .upload-area {
       border: 2px dashed #90cdf4;
       border-radius: 10px;
@@ -69,26 +101,21 @@
     }
 
     .upload-icon { font-size: 2.5rem; margin-bottom: 8px; }
-
-    .upload-area p {
-      color: #4a5568;
-      font-size: 0.95rem;
-    }
-
+    .upload-area p { color: #4a5568; font-size: 0.95rem; }
     .upload-area .hint {
       font-size: 0.8rem;
       color: #a0aec0;
       margin-top: 6px;
     }
 
-    #file-name {
+    .file-name {
       margin-top: 10px;
       font-size: 0.85rem;
       color: #2b6cb0;
       font-weight: 600;
     }
 
-    /* PRESET BUTTONS */
+    /* PRESETS */
     .presets {
       display: flex;
       flex-wrap: wrap;
@@ -114,7 +141,7 @@
       border-color: #2b6cb0;
     }
 
-    /* CUSTOM KB INPUTS */
+    /* KB INPUTS */
     .kb-inputs {
       display: flex;
       gap: 12px;
@@ -137,8 +164,8 @@
       text-align: center;
     }
 
-    /* COMPRESS BUTTON */
-    #compress-btn {
+    /* BUTTONS */
+    .action-btn {
       width: 100%;
       padding: 14px;
       background: #2b6cb0;
@@ -152,17 +179,14 @@
       margin-top: 6px;
     }
 
-    #compress-btn:hover   { background: #2c5282; }
-    #compress-btn:disabled {
+    .action-btn:hover    { background: #2c5282; }
+    .action-btn:disabled {
       background: #90cdf4;
       cursor: not-allowed;
     }
 
-    /* RESULT AREA */
-    #result {
-      display: none;
-      margin-top: 20px;
-    }
+    /* RESULT */
+    .result-card { display: none; margin-top: 20px; }
 
     .size-row {
       display: flex;
@@ -174,10 +198,7 @@
 
     .size-row:last-child { border-bottom: none; }
 
-    .size-label {
-      font-size: 0.85rem;
-      color: #718096;
-    }
+    .size-label { font-size: 0.85rem; color: #718096; }
 
     .size-value {
       font-size: 1rem;
@@ -188,7 +209,7 @@
     .size-value.success { color: #276749; }
     .size-value.warning { color: #c05621; }
 
-    #download-btn {
+    .download-btn {
       display: block;
       width: 100%;
       padding: 14px;
@@ -204,15 +225,12 @@
       text-decoration: none;
     }
 
-    #download-btn:hover { background: #22543d; }
+    .download-btn:hover { background: #22543d; }
 
-    /* STATUS MESSAGE */
-    #status {
-      text-align: center;
-      padding: 10px;
-      font-size: 0.9rem;
+    .file-count {
+      margin-top: 10px;
+      font-size: 0.85rem;
       color: #4a5568;
-      display: none;
     }
 
     footer {
@@ -232,152 +250,316 @@
 
 <div class="container">
 
-  <!-- UPLOAD CARD -->
-  <div class="card">
-    <h2>📁 Upload Image</h2>
-    <div class="upload-area" id="upload-area">
-      <input type="file" id="file-input" accept="image/*">
-      <div class="upload-icon">🖼️</div>
-      <p>Tap to choose an image</p>
-      <p class="hint">JPG, PNG, WEBP, BMP, TIFF supported</p>
-    </div>
-    <div id="file-name"></div>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('single')">🖼️ Single</button>
+    <button class="tab-btn"        onclick="switchTab('bulk')">📦 Bulk</button>
+    <button class="tab-btn"        onclick="switchTab('folder')">📁 Folder</button>
   </div>
 
-  <!-- TARGET SIZE CARD -->
-  <div class="card">
-    <h2>🎯 Target Size</h2>
+  <!-- ===================== -->
+  <!-- SINGLE IMAGE TAB      -->
+  <!-- ===================== -->
+  <div class="tab-panel active" id="tab-single">
 
-    <div class="presets">
-      <button class="preset-btn" data-min="17" data-max="20">NTS 20KB</button>
-      <button class="preset-btn" data-min="25" data-max="30">FPSC 30KB</button>
-      <button class="preset-btn" data-min="20" data-max="25">HEC 25KB</button>
-      <button class="preset-btn" data-min="40" data-max="50">NADRA 50KB</button>
-      <button class="preset-btn" data-min="150" data-max="200">WhatsApp</button>
-      <button class="preset-btn" data-min="800" data-max="1024">Instagram</button>
-      <button class="preset-btn" data-min="80" data-max="100">Web 100KB</button>
+    <div class="card">
+      <h2>📁 Upload Image</h2>
+      <div class="upload-area">
+        <input type="file" id="single-file" accept="image/*">
+        <div class="upload-icon">🖼️</div>
+        <p>Tap to choose an image</p>
+        <p class="hint">JPG, PNG, WEBP, BMP, TIFF supported</p>
+      </div>
+      <div class="file-name" id="single-file-name"></div>
     </div>
 
-    <div class="kb-inputs">
-      <label>Min KB:</label>
-      <input type="number" id="target-min" value="17" min="1">
-      <label>Max KB:</label>
-      <input type="number" id="target-max" value="20" min="1">
+    <div class="card">
+      <h2>🎯 Target Size</h2>
+      <div class="presets" id="single-presets">
+        <button class="preset-btn" data-min="17"  data-max="20">NTS 20KB</button>
+        <button class="preset-btn" data-min="25"  data-max="30">FPSC 30KB</button>
+        <button class="preset-btn" data-min="20"  data-max="25">HEC 25KB</button>
+        <button class="preset-btn" data-min="40"  data-max="50">NADRA 50KB</button>
+        <button class="preset-btn" data-min="150" data-max="200">WhatsApp</button>
+        <button class="preset-btn" data-min="800" data-max="1024">Instagram</button>
+        <button class="preset-btn" data-min="80"  data-max="100">Web 100KB</button>
+      </div>
+      <div class="kb-inputs">
+        <label>Min KB:</label>
+        <input type="number" id="single-min" value="17" min="1">
+        <label>Max KB:</label>
+        <input type="number" id="single-max" value="20" min="1">
+      </div>
     </div>
+
+    <button class="action-btn" id="single-btn">⚡ Compress Image</button>
+
+    <div class="card result-card" id="single-result">
+      <h2>✅ Result</h2>
+      <div class="size-row">
+        <span class="size-label">Original Size</span>
+        <span class="size-value" id="single-original">—</span>
+      </div>
+      <div class="size-row">
+        <span class="size-label">Compressed Size</span>
+        <span class="size-value" id="single-final">—</span>
+      </div>
+      <div class="size-row">
+        <span class="size-label">Status</span>
+        <span class="size-value" id="single-status">—</span>
+      </div>
+      <a class="download-btn" id="single-download" href="#" download>
+        ⬇️ Download Compressed Image
+      </a>
+    </div>
+
   </div>
+  <!-- END SINGLE TAB -->
 
-  <!-- COMPRESS BUTTON -->
-  <button id="compress-btn">⚡ Compress Image</button>
-  <div id="status">⏳ Compressing... please wait</div>
+  <!-- ===================== -->
+  <!-- BULK UPLOAD TAB       -->
+  <!-- ===================== -->
+  <div class="tab-panel" id="tab-bulk">
 
-  <!-- RESULT CARD -->
-  <div class="card" id="result">
-    <h2>✅ Result</h2>
-    <div class="size-row">
-      <span class="size-label">Original Size</span>
-      <span class="size-value" id="original-size">—</span>
+    <div class="card">
+      <h2>📦 Upload Images</h2>
+      <div class="upload-area">
+        <input type="file" id="bulk-files" accept="image/*" multiple>
+        <div class="upload-icon">📦</div>
+        <p>Tap to choose multiple images</p>
+        <p class="hint">Select as many images as you want</p>
+      </div>
+      <div class="file-count" id="bulk-file-list"></div>
     </div>
-    <div class="size-row">
-      <span class="size-label">Compressed Size</span>
-      <span class="size-value" id="final-size">—</span>
+
+    <div class="card">
+      <h2>🎯 Target Size</h2>
+      <div class="presets" id="bulk-presets">
+        <button class="preset-btn" data-min="17"  data-max="20">NTS 20KB</button>
+        <button class="preset-btn" data-min="25"  data-max="30">FPSC 30KB</button>
+        <button class="preset-btn" data-min="20"  data-max="25">HEC 25KB</button>
+        <button class="preset-btn" data-min="40"  data-max="50">NADRA 50KB</button>
+        <button class="preset-btn" data-min="150" data-max="200">WhatsApp</button>
+        <button class="preset-btn" data-min="800" data-max="1024">Instagram</button>
+        <button class="preset-btn" data-min="80"  data-max="100">Web 100KB</button>
+      </div>
+      <div class="kb-inputs">
+        <label>Min KB:</label>
+        <input type="number" id="bulk-min" value="17" min="1">
+        <label>Max KB:</label>
+        <input type="number" id="bulk-max" value="20" min="1">
+      </div>
     </div>
-    <div class="size-row">
-      <span class="size-label">Status</span>
-      <span class="size-value" id="result-status">—</span>
+
+    <button class="action-btn" id="bulk-btn">⚡ Compress All Images</button>
+
+    <div class="card result-card" id="bulk-result">
+      <h2>✅ Bulk Result</h2>
+      <div class="size-row">
+        <span class="size-label">Total Images</span>
+        <span class="size-value" id="bulk-total">—</span>
+      </div>
+      <div class="size-row">
+        <span class="size-label">Successful</span>
+        <span class="size-value success" id="bulk-success">—</span>
+      </div>
+      <div class="size-row">
+        <span class="size-label">Failed</span>
+        <span class="size-value warning" id="bulk-fail">—</span>
+      </div>
+      <a class="download-btn" id="bulk-download" href="#" download="compresskit_bulk.zip">
+        ⬇️ Download ZIP File
+      </a>
     </div>
-    <a id="download-btn" href="#" download>⬇️ Download Compressed Image</a>
+
   </div>
+  <!-- END BULK TAB -->
+
+  <!-- ===================== -->
+  <!-- FOLDER UPLOAD TAB     -->
+  <!-- ===================== -->
+  <div class="tab-panel" id="tab-folder">
+
+    <div class="card">
+      <h2>📁 Upload Folder</h2>
+      <div class="upload-area">
+        <input type="file" id="folder-input" webkitdirectory multiple>
+        <div class="upload-icon">📁</div>
+        <p>Tap to choose a folder</p>
+        <p class="hint">All images inside will be compressed</p>
+      </div>
+      <div class="file-count" id="folder-file-list"></div>
+    </div>
+
+    <div class="card">
+      <h2>🎯 Target Size</h2>
+      <div class="presets" id="folder-presets">
+        <button class="preset-btn" data-min="17"  data-max="20">NTS 20KB</button>
+        <button class="preset-btn" data-min="25"  data-max="30">FPSC 30KB</button>
+        <button class="preset-btn" data-min="20"  data-max="25">HEC 25KB</button>
+        <button class="preset-btn" data-min="40"  data-max="50">NADRA 50KB</button>
+        <button class="preset-btn" data-min="150" data-max="200">WhatsApp</button>
+        <button class="preset-btn" data-min="800" data-max="1024">Instagram</button>
+        <button class="preset-btn" data-min="80"  data-max="100">Web 100KB</button>
+      </div>
+      <div class="kb-inputs">
+        <label>Min KB:</label>
+        <input type="number" id="folder-min" value="17" min="1">
+        <label>Max KB:</label>
+        <input type="number" id="folder-max" value="20" min="1">
+      </div>
+    </div>
+
+    <button class="action-btn" id="folder-btn">⚡ Compress Folder</button>
+
+    <div class="card result-card" id="folder-result">
+      <h2>✅ Folder Result</h2>
+      <div class="size-row">
+        <span class="size-label">Total Images</span>
+        <span class="size-value" id="folder-total">—</span>
+      </div>
+      <div class="size-row">
+        <span class="size-label">Successful</span>
+        <span class="size-value success" id="folder-success">—</span>
+      </div>
+      <div class="size-row">
+        <span class="size-label">Failed</span>
+        <span class="size-value warning" id="folder-fail">—</span>
+      </div>
+      <div class="size-row">
+        <span class="size-label">ZIP Name</span>
+        <span class="size-value" id="folder-zip-name">—</span>
+      </div>
+      <a class="download-btn" id="folder-download" href="#" download>
+        ⬇️ Download Folder ZIP
+      </a>
+    </div>
+
+  </div>
+  <!-- END FOLDER TAB -->
 
 </div>
+<!-- END CONTAINER -->
 
 <footer>CompressKit — Free image compression tool</footer>
 
 <script>
-  // Show file name when selected
-  document.getElementById('file-input').addEventListener('change', function() {
-    const name = this.files[0] ? this.files[0].name : '';
-    document.getElementById('file-name').textContent = name;
-  });
 
-  // Preset buttons
-  document.querySelectorAll('.preset-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      document.getElementById('target-min').value = this.dataset.min;
-      document.getElementById('target-max').value = this.dataset.max;
+  // =====================
+  // TAB SWITCHER
+  // =====================
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active',
+        (tab === 'single' && i === 0) ||
+        (tab === 'bulk'   && i === 1) ||
+        (tab === 'folder' && i === 2)
+      );
     });
+    document.getElementById('tab-single').classList.toggle('active', tab === 'single');
+    document.getElementById('tab-bulk').classList.toggle('active',   tab === 'bulk');
+    document.getElementById('tab-folder').classList.toggle('active', tab === 'folder');
+  }
+
+  // =====================
+  // PRESET BUTTONS
+  // =====================
+  function setupPresets(containerId, minId, maxId) {
+    document.getElementById(containerId).querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.getElementById(containerId)
+          .querySelectorAll('.preset-btn')
+          .forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(minId).value = this.dataset.min;
+        document.getElementById(maxId).value = this.dataset.max;
+      });
+    });
+  }
+
+  setupPresets('single-presets', 'single-min', 'single-max');
+  setupPresets('bulk-presets',   'bulk-min',   'bulk-max');
+  setupPresets('folder-presets', 'folder-min', 'folder-max');
+
+  // =====================
+  // FILE NAME — SINGLE
+  // =====================
+  document.getElementById('single-file').addEventListener('change', function() {
+    document.getElementById('single-file-name').textContent =
+      this.files[0] ? this.files[0].name : '';
   });
 
-  // Compress button
-  document.getElementById('compress-btn').addEventListener('click', async function() {
-    const fileInput = document.getElementById('file-input');
+  // =====================
+  // FILE COUNT — BULK
+  // =====================
+  document.getElementById('bulk-files').addEventListener('change', function() {
+    const list = document.getElementById('bulk-file-list');
+    list.textContent = this.files.length
+      ? `${this.files.length} image(s) selected`
+      : '';
+  });
 
-    if (!fileInput.files[0]) {
-      alert('Please select an image first.');
-      return;
-    }
+  // =====================
+  // FILE COUNT — FOLDER
+  // =====================
+  document.getElementById('folder-input').addEventListener('change', function() {
+    const images = Array.from(this.files).filter(f => f.type.startsWith('image/'));
+    document.getElementById('folder-file-list').textContent =
+      images.length ? `${images.length} image(s) found in folder` : '';
+  });
 
-    const minKb = document.getElementById('target-min').value;
-    const maxKb = document.getElementById('target-max').value;
+  // =====================
+  // SINGLE COMPRESS
+  // =====================
+  document.getElementById('single-btn').addEventListener('click', async function() {
+    const fileInput = document.getElementById('single-file');
+    if (!fileInput.files[0]) { alert('Please select an image first.'); return; }
 
+    const minKb = document.getElementById('single-min').value;
+    const maxKb = document.getElementById('single-max').value;
     if (parseInt(minKb) >= parseInt(maxKb)) {
-      alert('Min KB must be less than Max KB.');
-      return;
+      alert('Min KB must be less than Max KB.'); return;
     }
 
-    // Build form data
     const formData = new FormData();
     formData.append('file', fileInput.files[0]);
     formData.append('target_min', minKb);
     formData.append('target_max', maxKb);
 
-    // Show loading state
     this.disabled = true;
     this.textContent = '⏳ Compressing...';
-    document.getElementById('status').style.display = 'block';
-    document.getElementById('result').style.display = 'none';
+    document.getElementById('single-result').style.display = 'none';
 
     try {
-      const response = await fetch('/compress', {
-        method: 'POST',
-        body: formData
-      });
+      const response = await fetch('/compress', { method: 'POST', body: formData });
 
       if (!response.ok) {
         const err = await response.json();
-        alert('Error: ' + err.error);
-        return;
+        alert('Error: ' + err.error); return;
       }
 
-      // Read size headers
       const originalKb = response.headers.get('X-Original-KB');
       const finalKb    = response.headers.get('X-Final-KB');
       const success    = response.headers.get('X-Success');
+      const blob       = await response.blob();
+      const url        = URL.createObjectURL(blob);
 
-      // Get file blob for download
-      const blob = await response.blob();
-      const url  = URL.createObjectURL(blob);
+      document.getElementById('single-original').textContent = originalKb + ' KB';
+      document.getElementById('single-final').textContent    = finalKb + ' KB';
 
-      // Fill result card
-      document.getElementById('original-size').textContent = originalKb + ' KB';
-      document.getElementById('final-size').textContent    = finalKb + ' KB';
-
-      const statusEl = document.getElementById('result-status');
+      const statusEl = document.getElementById('single-status');
       if (success === 'True') {
-        statusEl.textContent  = '✅ In target range';
-        statusEl.className    = 'size-value success';
+        statusEl.textContent = '✅ In target range';
+        statusEl.className   = 'size-value success';
       } else {
-        statusEl.textContent  = '⚠️ Close but not exact';
-        statusEl.className    = 'size-value warning';
+        statusEl.textContent = '⚠️ Close but not exact';
+        statusEl.className   = 'size-value warning';
       }
 
-      // Set download link
-      const originalName = fileInput.files[0].name.replace(/\.[^.]+$/, '');
-      document.getElementById('download-btn').href     = url;
-      document.getElementById('download-btn').download = originalName + '_compressed.jpg';
-
-      document.getElementById('result').style.display = 'block';
+      const name = fileInput.files[0].name.replace(/\.[^.]+$/, '');
+      document.getElementById('single-download').href     = url;
+      document.getElementById('single-download').download = name + '_compressed.jpg';
+      document.getElementById('single-result').style.display = 'block';
 
     } catch (err) {
       alert('Something went wrong. Please try again.');
@@ -385,9 +567,123 @@
     } finally {
       this.disabled = false;
       this.textContent = '⚡ Compress Image';
-      document.getElementById('status').style.display = 'none';
     }
   });
+
+  // =====================
+  // BULK COMPRESS
+  // =====================
+  document.getElementById('bulk-btn').addEventListener('click', async function() {
+    const fileInput = document.getElementById('bulk-files');
+    if (!fileInput.files.length) { alert('Please select images first.'); return; }
+
+    const minKb = document.getElementById('bulk-min').value;
+    const maxKb = document.getElementById('bulk-max').value;
+    if (parseInt(minKb) >= parseInt(maxKb)) {
+      alert('Min KB must be less than Max KB.'); return;
+    }
+
+    const formData = new FormData();
+    for (const file of fileInput.files) {
+      formData.append('files', file);
+    }
+    formData.append('target_min', minKb);
+    formData.append('target_max', maxKb);
+
+    this.disabled = true;
+    this.textContent = `⏳ Compressing ${fileInput.files.length} images...`;
+    document.getElementById('bulk-result').style.display = 'none';
+
+    try {
+      const response = await fetch('/compress-bulk', { method: 'POST', body: formData });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert('Error: ' + err.error); return;
+      }
+
+      const total   = response.headers.get('X-Total');
+      const success = response.headers.get('X-Success-Count');
+      const fail    = response.headers.get('X-Fail-Count');
+      const blob    = await response.blob();
+      const url     = URL.createObjectURL(blob);
+
+      document.getElementById('bulk-total').textContent   = total;
+      document.getElementById('bulk-success').textContent = success;
+      document.getElementById('bulk-fail').textContent    = fail;
+      document.getElementById('bulk-download').href       = url;
+      document.getElementById('bulk-result').style.display = 'block';
+
+    } catch (err) {
+      alert('Something went wrong. Please try again.');
+      console.error(err);
+    } finally {
+      this.disabled = false;
+      this.textContent = '⚡ Compress All Images';
+    }
+  });
+
+  // =====================
+  // FOLDER COMPRESS
+  // =====================
+  document.getElementById('folder-btn').addEventListener('click', async function() {
+    const fileInput = document.getElementById('folder-input');
+    const allFiles  = Array.from(fileInput.files).filter(f => f.type.startsWith('image/'));
+
+    if (allFiles.length === 0) {
+      alert('Please select a folder with images first.'); return;
+    }
+
+    const minKb = document.getElementById('folder-min').value;
+    const maxKb = document.getElementById('folder-max').value;
+    if (parseInt(minKb) >= parseInt(maxKb)) {
+      alert('Min KB must be less than Max KB.'); return;
+    }
+
+    const formData = new FormData();
+    for (const file of allFiles) {
+      formData.append('folder_files', file);
+      formData.append('file_paths', file.webkitRelativePath);
+    }
+    formData.append('target_min', minKb);
+    formData.append('target_max', maxKb);
+
+    this.disabled = true;
+    this.textContent = `⏳ Compressing ${allFiles.length} images...`;
+    document.getElementById('folder-result').style.display = 'none';
+
+    try {
+      const response = await fetch('/compress-folder', { method: 'POST', body: formData });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert('Error: ' + err.error); return;
+      }
+
+      const total      = response.headers.get('X-Total');
+      const success    = response.headers.get('X-Success-Count');
+      const fail       = response.headers.get('X-Fail-Count');
+      const folderName = response.headers.get('X-Folder-Name');
+      const blob       = await response.blob();
+      const url        = URL.createObjectURL(blob);
+
+      document.getElementById('folder-total').textContent    = total;
+      document.getElementById('folder-success').textContent  = success;
+      document.getElementById('folder-fail').textContent     = fail;
+      document.getElementById('folder-zip-name').textContent = folderName + '.zip';
+      document.getElementById('folder-download').href        = url;
+      document.getElementById('folder-download').download    = folderName + '.zip';
+      document.getElementById('folder-result').style.display = 'block';
+
+    } catch (err) {
+      alert('Something went wrong. Please try again.');
+      console.error(err);
+    } finally {
+      this.disabled = false;
+      this.textContent = '⚡ Compress Folder';
+    }
+  });
+
 </script>
 
 </body>
