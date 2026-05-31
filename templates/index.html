@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CompressKit — Compress Images to Exact KB</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #2b6cb0;
+      color: white;
+      padding: 18px 20px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 1.6rem; }
+    header p  { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      color: #2d3748;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* FILE UPLOAD AREA */
+    .upload-area {
+      border: 2px dashed #90cdf4;
+      border-radius: 10px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+    }
+
+    .upload-area:hover { background: #ebf8ff; }
+
+    .upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+    .upload-area p {
+      color: #4a5568;
+      font-size: 0.95rem;
+    }
+
+    .upload-area .hint {
+      font-size: 0.8rem;
+      color: #a0aec0;
+      margin-top: 6px;
+    }
+
+    #file-name {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #2b6cb0;
+      font-weight: 600;
+    }
+
+    /* PRESET BUTTONS */
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .preset-btn {
+      padding: 8px 14px;
+      border: 2px solid #bee3f8;
+      border-radius: 20px;
+      background: white;
+      color: #2b6cb0;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    .preset-btn:hover,
+    .preset-btn.active {
+      background: #2b6cb0;
+      color: white;
+      border-color: #2b6cb0;
+    }
+
+    /* CUSTOM KB INPUTS */
+    .kb-inputs {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+      align-items: center;
+    }
+
+    .kb-inputs label {
+      font-size: 0.85rem;
+      color: #4a5568;
+      white-space: nowrap;
+    }
+
+    .kb-inputs input {
+      width: 80px;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    /* COMPRESS BUTTON */
+    #compress-btn {
+      width: 100%;
+      padding: 14px;
+      background: #2b6cb0;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 6px;
+    }
+
+    #compress-btn:hover   { background: #2c5282; }
+    #compress-btn:disabled {
+      background: #90cdf4;
+      cursor: not-allowed;
+    }
+
+    /* RESULT AREA */
+    #result {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .size-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .size-row:last-child { border-bottom: none; }
+
+    .size-label {
+      font-size: 0.85rem;
+      color: #718096;
+    }
+
+    .size-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    .size-value.success { color: #276749; }
+    .size-value.warning { color: #c05621; }
+
+    #download-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #276749;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 16px;
+      text-decoration: none;
+    }
+
+    #download-btn:hover { background: #22543d; }
+
+    /* STATUS MESSAGE */
+    #status {
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      color: #4a5568;
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      color: #a0aec0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🗜️ CompressKit</h1>
+  <p>Compress images to exact KB — free, fast, no signup</p>
+</header>
+
+<div class="container">
+
+  <!-- UPLOAD CARD -->
+  <div class="card">
+    <h2>📁 Upload Image</h2>
+    <div class="upload-area" id="upload-area">
+      <input type="file" id="file-input" accept="image/*">
+      <div class="upload-icon">🖼️</div>
+      <p>Tap to choose an image</p>
+      <p class="hint">JPG, PNG, WEBP, BMP, TIFF supported</p>
+    </div>
+    <div id="file-name"></div>
+  </div>
+
+  <!-- TARGET SIZE CARD -->
+  <div class="card">
+    <h2>🎯 Target Size</h2>
+
+    <div class="presets">
+      <button class="preset-btn" data-min="17" data-max="20">NTS 20KB</button>
+      <button class="preset-btn" data-min="25" data-max="30">FPSC 30KB</button>
+      <button class="preset-btn" data-min="20" data-max="25">HEC 25KB</button>
+      <button class="preset-btn" data-min="40" data-max="50">NADRA 50KB</button>
+      <button class="preset-btn" data-min="150" data-max="200">WhatsApp</button>
+      <button class="preset-btn" data-min="800" data-max="1024">Instagram</button>
+      <button class="preset-btn" data-min="80" data-max="100">Web 100KB</button>
+    </div>
+
+    <div class="kb-inputs">
+      <label>Min KB:</label>
+      <input type="number" id="target-min" value="17" min="1">
+      <label>Max KB:</label>
+      <input type="number" id="target-max" value="20" min="1">
+    </div>
+  </div>
+
+  <!-- COMPRESS BUTTON -->
+  <button id="compress-btn">⚡ Compress Image</button>
+  <div id="status">⏳ Compressing... please wait</div>
+
+  <!-- RESULT CARD -->
+  <div class="card" id="result">
+    <h2>✅ Result</h2>
+    <div class="size-row">
+      <span class="size-label">Original Size</span>
+      <span class="size-value" id="original-size">—</span>
+    </div>
+    <div class="size-row">
+      <span class="size-label">Compressed Size</span>
+      <span class="size-value" id="final-size">—</span>
+    </div>
+    <div class="size-row">
+      <span class="size-label">Status</span>
+      <span class="size-value" id="result-status">—</span>
+    </div>
+    <a id="download-btn" href="#" download>⬇️ Download Compressed Image</a>
+  </div>
+
+</div>
+
+<footer>CompressKit — Free image compression tool</footer>
+
+<script>
+  // Show file name when selected
+  document.getElementById('file-input').addEventListener('change', function() {
+    const name = this.files[0] ? this.files[0].name : '';
+    document.getElementById('file-name').textContent = name;
+  });
+
+  // Preset buttons
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('target-min').value = this.dataset.min;
+      document.getElementById('target-max').value = this.dataset.max;
+    });
+  });
+
+  // Compress button
+  document.getElementById('compress-btn').addEventListener('click', async function() {
+    const fileInput = document.getElementById('file-input');
+
+    if (!fileInput.files[0]) {
+      alert('Please select an image first.');
+      return;
+    }
+
+    const minKb = document.getElementById('target-min').value;
+    const maxKb = document.getElementById('target-max').value;
+
+    if (parseInt(minKb) >= parseInt(maxKb)) {
+      alert('Min KB must be less than Max KB.');
+      return;
+    }
+
+    // Build form data
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    formData.append('target_min', minKb);
+    formData.append('target_max', maxKb);
+
+    // Show loading state
+    this.disabled = true;
+    this.textContent = '⏳ Compressing...';
+    document.getElementById('status').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
+
+    try {
+      const response = await fetch('/compress', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert('Error: ' + err.error);
+        return;
+      }
+
+      // Read size headers
+      const originalKb = response.headers.get('X-Original-KB');
+      const finalKb    = response.headers.get('X-Final-KB');
+      const success    = response.headers.get('X-Success');
+
+      // Get file blob for download
+      const blob = await response.blob();
+      const url  = URL.createObjectURL(blob);
+
+      // Fill result card
+      document.getElementById('original-size').textContent = originalKb + ' KB';
+      document.getElementById('final-size').textContent    = finalKb + ' KB';
+
+      const statusEl = document.getElementById('result-status');
+      if (success === 'True') {
+        statusEl.textContent  = '✅ In target range';
+        statusEl.className    = 'size-value success';
+      } else {
+        statusEl.textContent  = '⚠️ Close but not exact';
+        statusEl.className    = 'size-value warning';
+      }
+
+      // Set download link
+      const originalName = fileInput.files[0].name.replace(/\.[^.]+$/, '');
+      document.getElementById('download-btn').href     = url;
+      document.getElementById('download-btn').download = originalName + '_compressed.jpg';
+
+      document.getElementById('result').style.display = 'block';
+
+    } catch (err) {
+      alert('Something went wrong. Please try again.');
+      console.error(err);
+    } finally {
+      this.disabled = false;
+      this.textContent = '⚡ Compress Image';
+      document.getElementById('status').style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><title>CompressKit Test</title></head>
+<body>
+  <h2>Test Compression</h2>
+  <form action="/compress" method="POST" enctype="multipart/form-data">
+    <p>
+      <label>Choose image:</label><br>
+      <input type="file" name="file" accept="image/*">
+    </p>
+    <p>
+      <label>Min KB:</label>
+      <input type="number" name="target_min" value="17">
+      &nbsp;&nbsp;
+      <label>Max KB:</label>
+      <input type="number" name="target_max" value="20">
+    </p>
+    
+    <button type="submit">Compress</button>
+  </form>
+</body>
+</html>
