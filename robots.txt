@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://compress-kit.onrender.com/sitemap.xml

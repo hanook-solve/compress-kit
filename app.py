@@ -4,6 +4,7 @@ from io import BytesIO
 from flask import render_template
 import io
 import zipfile
+from flask import Response
 
 
 
@@ -164,6 +165,18 @@ def compress_bulk():
     response.headers['X-Total'] = str(success_count + fail_count)
 
     return response
+
+@app.route('/sitemap.xml')
+def sitemap():
+    with open('sitemap.xml', 'r') as f:
+        content = f.read()
+    return Response(content, mimetype='application/xml')
+
+@app.route('/robots.txt')
+def robots():
+    with open('robots.txt', 'r') as f:
+        content = f.read()
+    return Response(content, mimetype='text/plain')
 
 
 if __name__ == '__main__':
