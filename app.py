@@ -28,6 +28,48 @@ def allowed_file(filename):
 def home():
     return render_template('index.html')
 
+@app.route('/compress', methods=['POST'])
+def compress():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'File type not supported'}), 400
+
+    try:
+        target_min = int(request.form.get('target_min', 17))
+        target_max = int(request.form.get('target_max', 20))
+    except ValueError:
+        return jsonify({'error': 'Invalid target size'}), 400
+
+    result_bytes, original_kb, final_kb, success = compress_image(
+        file, target_min, target_max
+    )
+
+    output = BytesIO(result_bytes)
+    output.seek(0)
+
+    original_name = file.filename.rsplit('.', 1)[0]
+    download_name = f"{original_name}_compressed.jpg"
+
+    response = send_file(
+        output,
+        mimetype='image/jpeg',
+        as_attachment=True,
+        download_name=download_name
+    )
+
+    response.headers['X-Original-KB'] = str(original_kb)
+    response.headers['X-Final-KB']    = str(final_kb)
+    response.headers['X-Success']     = str(success)
+
+    return response
+
 
 @app.route('/compress-folder', methods=['POST'])
 def compress_folder():
