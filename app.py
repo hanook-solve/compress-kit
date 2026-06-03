@@ -168,9 +168,16 @@ def compress_bulk():
 
 @app.route('/sitemap.xml')
 def sitemap():
-    with open('sitemap.xml', 'r') as f:
-        content = f.read()
-    return Response(content, mimetype='application/xml')
+    xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://compress-kit.onrender.com/</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>'''
+    return Response(xml, mimetype='application/xml')
 
 @app.route('/robots.txt')
 def robots():
