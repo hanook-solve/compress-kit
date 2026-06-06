@@ -223,8 +223,9 @@ def sitemap():
 
 @app.route('/robots.txt')
 def robots():
-    with open('robots.txt', 'r') as f:
-        content = f.read()
+    content = '''User-agent: *
+Allow: /
+Sitemap: https://compress-kit.onrender.com/sitemap.xml'''
     return Response(content, mimetype='text/plain')
 
 
