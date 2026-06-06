@@ -223,10 +223,12 @@ def sitemap():
 
 @app.route('/robots.txt')
 def robots():
-    content = '''User-agent: *
-Allow: /
-Sitemap: https://compress-kit.onrender.com/sitemap.xml'''
-    return Response(content, mimetype='text/plain')
+    lines = [
+        'User-agent: *',
+        'Allow: /',
+        'Sitemap: https://compress-kit.onrender.com/sitemap.xml'
+    ]
+    return Response('\n'.join(lines), mimetype='text/plain')
 
 
 @app.route('/health')
