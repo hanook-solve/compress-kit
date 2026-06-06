@@ -229,5 +229,9 @@ Sitemap: https://compress-kit.onrender.com/sitemap.xml'''
     return Response(content, mimetype='text/plain')
 
 
+@app.route('/health')
+def health():
+    return 'OK', 200
+
 if __name__ == '__main__':
     app.run(debug=False)
